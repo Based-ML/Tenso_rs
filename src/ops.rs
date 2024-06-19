@@ -91,21 +91,24 @@ impl Mul<f32> for Tensor {
 impl Mul<Tensor>  for Tensor {
     type Output = Tensor;
 
-    fn mul(self, rhs: Tensor) -> Tensor {
+    fn mul(self, mut rhs: Tensor) -> Tensor {
         if self.dim[1] != rhs.dim[0] {
             panic!("Tensors not compatible for Multiplication")
         }
         let dim = vec![self.dim[0], rhs.dim[1]];
         let mut elems = Vec::<f64>::with_capacity(dim.iter().product());
+        rhs = rhs.T(); // transposing alligns vector rows and columns
         for i in 0..self.dim[0] {
-            for j in 0..rhs.dim[1] {
+            for j in 0..self.dim[0] {
                 let mut e: f64 = 0.;
-                for k in 0..rhs.dim[0] {
-                    e += self.elems[(i*self.dim[1])+k] * rhs.elems[j+(k*rhs.dim[1])]
+                for k in 0..self.dim[1] {
+                    // println!("self index = {}",(i*self.dim[1])+k);
+                    // println!("rhs.T index = {}",(i*self.dim[1])+k);
+                    e += self.elems[(i*self.dim[1])+k] * rhs.elems[(j*rhs.dim[1])+k];
                 }
                 elems.push(e);
             }
         }
-        Tensor{ elems: elems, dim: dim }
+        Tensor{ elems: elems, dim: vec![self.dim[0], rhs.dim[0]] }
     }
 }

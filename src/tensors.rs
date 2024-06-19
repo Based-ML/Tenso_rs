@@ -32,6 +32,16 @@ impl Tensor {
         }
     }
 
+    pub fn T(&mut self) -> Tensor {
+        let mut elems = Vec::<f64>::with_capacity(self.elems.len());
+        for j in 0..self.dim[1] {
+            for i in 0..self.dim[0] {
+                elems.push(self.elems[j+(i*self.dim[1])])
+            }
+        }
+        Tensor{ elems: elems, dim: vec![self.dim[1], self.dim[0]] }
+    }
+
     pub fn linspace(start: f64, end: f64, num: usize) -> Tensor {
         let mut elems = Vec::<f64>::with_capacity(num);
         let stepsize: f64 = (&end - &start) / ((num as f64) - 1.0);
