@@ -99,11 +99,9 @@ impl Mul<Tensor>  for Tensor {
         let mut elems = Vec::<f64>::with_capacity(dim.iter().product());
         rhs = rhs.T(); // transposing alligns vector rows and columns
         for i in 0..self.dim[0] {
-            for j in 0..self.dim[0] {
+            for j in 0..rhs.dim[0] {
                 let mut e: f64 = 0.;
                 for k in 0..self.dim[1] {
-                    // println!("self index = {}",(i*self.dim[1])+k);
-                    // println!("rhs.T index = {}",(i*self.dim[1])+k);
                     e += self.elems[(i*self.dim[1])+k] * rhs.elems[(j*rhs.dim[1])+k];
                 }
                 elems.push(e);
